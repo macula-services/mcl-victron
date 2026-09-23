@@ -1,0 +1,54 @@
+%% Substituted by relx at boot: every ${VAR} must resolve or the node does not
+%% start. That is the right failure. A service with a half-configured realm
+%% announces itself where nobody can attribute it, and looks healthy.
+[
+    {mcl_victron, [
+        %% The realm NAME the topic carries (io.macula). MCL_REALM is its sha256
+        %% tag; the service refuses to start unless they agree.
+        {realm_name,     "${MCL_REALM_NAME}"},
+        %% The GX's dbus-flashmq broker, on the LAN. No auth, no TLS: that is
+        %% how Venus OS serves it.
+        {mqtt_host,      "${VICTRON_MQTT_HOST}"},
+        {mqtt_port,      ${VICTRON_MQTT_PORT}},
+        {mqtt_keepalive, ${VICTRON_MQTT_KEEPALIVE_SEC}}
+    ]},
+    {mcl_om, [
+        %% The node identity: the verified publisher of every reading. Without
+        %% the path mcl_om refuses to start rather than run on a throwaway
+        %% identity nobody can list. ON A PERSISTENT VOLUME.
+        {identity_key_path, "/etc/mcl/secrets/identity.key"},
+        {health_port,       ${MCL_HEALTH_PORT}},
+        {capability_topic,  <<"_mesh.cap.">>},
+        %% One org per service, named after the repo: the org that owns the
+        %% reading topic. Fixed, not deploy config.
+        {org,               <<"mcl-victron">>},
+        {service_name,      <<"mcl-victron">>},
+        %% The realm tag, as an APPLICATION ENV: mcl_om reads
+        %% application:get_env(mcl_om, realm), and nothing translates a shell
+        %% variable into it but this line.
+        {realm,             <<"${MCL_REALM}">>},
+        %% ⚠ THE TRUST ANCHOR, NOT OPTIONAL: the realm's public signing key, hex.
+        %% Without it the boot claim never reaches the realm and the node stays
+        %% green while unreachable. Public material, not a secret.
+        {realm_key,         <<"${MCL_REALM_KEY}">>}
+    ]},
+    %% ⚠ MANDATORY. Without the pq_hybrid profile the node boots classical and
+    %% every PQ station closes the handshake, forever, silently. No
+    %% `puzzle_difficulty': macula 12 makes it one fleet constant and refuses the
+    %% setting.
+    {macula, [
+        {crypto_profile, pq_hybrid}
+    ]},
+    %% ⚠ MANDATORY BECAUSE THIS SERVICE EXPORTS store_id/0. mcl_om:boot/1 starts
+    %% a per-store evoq subscription that crashes on
+    %% {not_configured, event_store_adapter} without this block, and evoq starts
+    %% before any service's start/2, so nothing can inject it later. The
+    %% store_id MUST be mcl_victron_service:store_id/0; a test compares them.
+    {evoq, [
+        {event_store_adapter,    reckon_evoq_adapter},
+        {subscription_adapter,   reckon_evoq_adapter},
+        {snapshot_store_adapter, reckon_evoq_adapter},
+        {store_id,               mcl_victron_store}
+    ]},
+    {kernel, [{logger_level, info}]}
+].

@@ -1,0 +1,8 @@
+## Node identity and runtime flags for mcl_victron.
+-name ${MCL_NODE_NAME}@${MCL_NODE_HOST}
+-setcookie ${MCL_COOKIE}
+
++K true
+
+## Async threads for file I/O: the reckon-db store writes every reading.
++A 8

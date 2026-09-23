@@ -1,0 +1,58 @@
+# Build the OCI image for mcl-victron and push it to ghcr.io.
+#
+# A v* tag pushes the semver tag; a push to main pushes :latest. Nothing deploys
+# from here: the fleet runs pinned versions from macula-fleet.
+
+name: build-and-push
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    # A push that changes no code must not build. ⚠ On the push that CREATES a
+    # branch, GitHub filters on the head commit alone, so a first push whose
+    # last commit is docs-only builds nothing. Dispatch this workflow then.
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'scripts/**'
+  workflow_dispatch:
+
+# One build per ref: three quick pushes would otherwise finish in any order and
+# leave :latest on whichever finished last.
+concurrency:
+  group: build-and-push-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to the registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set tag
+        id: tag
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Containerfile
+          push: true
+          tags: ghcr.io/macula-services/mcl-victron:${{ steps.tag.outputs.tag }}

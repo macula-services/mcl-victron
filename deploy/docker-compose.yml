@@ -1,0 +1,54 @@
+# mcl-victron: how to run this service.
+#
+# Runnable as-is. It carries what the SERVICE knows about itself: its image, its
+# port, the environment its code reads, its volumes and its health check.
+#
+#   MCL_REALM=<64-hex> MCL_REALM_NAME=io.macula \
+#     MCL_REALM_KEY=<hex of the realm's public signing key> \
+#     MACULA_STATION_SEEDS=station.example:4433 \
+#     MACULA_STATION_NODE_IDS=<64-hex node id of that station> \
+#     VICTRON_MQTT_HOST=<the GX's LAN address> \
+#     docker compose -p mcl-victron -f deploy/docker-compose.yml up -d
+#
+# It must share a LAN with the GX device: dbus-flashmq serves MQTT on the local
+# network only. Placement belongs to the fleet repository, not here.
+
+services:
+  mcl-victron:
+    image: ghcr.io/macula-services/mcl-victron:latest
+    container_name: mcl-victron
+    restart: unless-stopped
+    # macula stations are reachable over IPv6 only, and a default bridge has no
+    # IPv6: a bridged container connects to nothing and looks fine.
+    network_mode: host
+    volumes:
+      # ⚠ THE RECORD: every reading, on the device's stream. Without the mount
+      # every recreate forgets them. On a bulk drive on a fleet node.
+      - ${MCL_VICTRON_DATA:-/bulk0/mcl-victron}:/data
+      # ⚠ NAMED, SO IT OUTLIVES THE CONTAINER: the node identity every reading
+      # is published under.
+      - secrets:/etc/mcl/secrets
+    environment:
+      - MCL_REALM=${MCL_REALM:?set MCL_REALM to the 64-hex realm tag}
+      - MCL_REALM_NAME=${MCL_REALM_NAME:?set MCL_REALM_NAME to the realm name, e.g. io.macula}
+      - MCL_REALM_KEY=${MCL_REALM_KEY:?set MCL_REALM_KEY to the hex-encoded public realm signing key}
+      # The 12.x dial is PINNED: each seed pairs with its station's node id,
+      # index for index.
+      - MACULA_STATION_SEEDS=${MACULA_STATION_SEEDS:?set MACULA_STATION_SEEDS to "host[:port][,host[:port]...]"}
+      - MACULA_STATION_NODE_IDS=${MACULA_STATION_NODE_IDS:?set MACULA_STATION_NODE_IDS to the matching 64-hex node ids}
+      # No default: a guessed broker is somebody else's.
+      - VICTRON_MQTT_HOST=${VICTRON_MQTT_HOST:?set VICTRON_MQTT_HOST to the GX device's LAN address}
+      - VICTRON_MQTT_PORT=${VICTRON_MQTT_PORT:-1883}
+      - VICTRON_MQTT_KEEPALIVE_SEC=${VICTRON_MQTT_KEEPALIVE_SEC:-30}
+      - MCL_NODE_NAME=mcl_victron
+      - MCL_NODE_HOST=127.0.0.1
+      - MCL_COOKIE=mcl_victron
+      # Host networking: a port already bound on the host fails SILENTLY.
+      - MCL_HEALTH_PORT=8483
+      - MCL_DATA_DIR=/data
+
+# Named here, not left to the project name, so `-p' with another name reuses the
+# same identity instead of quietly starting a second one.
+volumes:
+  secrets:
+    name: mcl-victron-secrets

@@ -1,0 +1,26 @@
+{application, mcl_victron, [
+    {description, "Victron GX (dbus-flashmq MQTT) telemetry, recorded and published on the mesh"},
+    {vsn, "0.1.0"},
+    {registered, [mcl_victron_sup, receive_victron_mqtt_sup, receive_victron_mqtt]},
+    {mod, {mcl_victron_app, []}},
+    {applications, [
+        kernel,
+        stdlib,
+        crypto,
+        %% Mesh SDK, realm identity, health, and the reckon-db store wiring.
+        mcl_om,
+        evoq,
+        reckon_evoq
+    ]},
+    {env, [
+        %% The GX's dbus-flashmq broker, on the LAN.
+        {mqtt_host, "127.0.0.1"},
+        {mqtt_port, 1883},
+        %% Seconds between keepalives: the broker's session and the GX's
+        %% value republishing both need one.
+        {mqtt_keepalive, 30}
+    ]},
+    {modules, []},
+    {licenses, ["Apache-2.0"]},
+    {links, [{"GitHub", "https://github.com/macula-services/mcl-victron"}]}
+]}.
