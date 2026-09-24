@@ -3,6 +3,23 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning: [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- **mcl_om `~> 0.28`, which requires macula 12.2.** Under macula 12.2 an older
+  mcl_om lets a failed publish announcement kill the publishing process. The
+  service answers `mcl-victron/info` with no code of its own (which also makes
+  it count as online on the realm's Providers desk); `mcl_victron_info_tests`
+  round-trips it through macula's codec and fails unless it reports mcl_om 0.28
+  with macula 12.2.
+- **The team image pair.** The image builds in `macula-ci-otp` and runs on
+  `macula-pq-runtime`, both pinned by dated tag and digest (20260923-1444),
+  instead of the hexpm Alpine builder and a floating `alpine:3.22` runtime;
+  lint runs on the same build image. The runtime image carries every library
+  the old apk line installed. The image is labelled with the commit it was
+  built from.
+
 ## [0.1.0]
 
 The macula 12 port of hecate-victron, on mcl_om.

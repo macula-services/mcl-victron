@@ -24,11 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     container:
-      # ⚠ MUST MATCH THE `Containerfile' beside it: OTP 28.4.3. The dated
-      # macula-ci-otp tag is macula-io/macula-ci-images' build (OTP 28.4.3, an
-      # OpenSSL with ML-DSA, rebar3, Rust 1.98.1, cmake), pinned by digest; the
-      # step below refuses anything else. mcl_victron_service_tests guards the pins.
-      image: ghcr.io/macula-io/macula-ci-otp:20260923-1347@sha256:b2260d084a3d3c5e0b74932c4ee052a0cadfddddb6587d5d2214873e6bb06330
+      # ⚠ THE SAME DIGEST-PINNED BUILD IMAGE AS THE Containerfile (macula-ci-otp:
+      # OTP 28.4.3 on an OpenSSL with ML-DSA, rebar3, Rust, cmake). Its tag names
+      # a date, not a release, so the step below refuses anything but 28.4.3.
+      # mcl_victron_service_tests guards this pin, the builder's and the runtime's.
+      image: ghcr.io/macula-io/macula-ci-otp:20260923-1444@sha256:dd2ba6eb858a0eacedf0179300323fe5c6da46fb308d22da0ca8cfcd1f0718dc
     steps:
       - uses: actions/checkout@v4
       - name: Verify the toolchain is the one we think it is

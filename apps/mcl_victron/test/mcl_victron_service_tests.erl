@@ -85,19 +85,39 @@ a_silent_gx_is_degraded_test() ->
 %% and the VM running this test. A floating `erlang:28' once shipped OTP 28.5 to
 %% the fleet while every check stayed green.
 the_runtime_agrees_between_the_image_the_ci_and_this_vm_test() ->
-    Image = pinned("Containerfile",
-                   "^FROM docker\\.io/(?:hexpm/)?erlang:([0-9]+\\.[0-9]+\\.[0-9]+)"
-                   "-alpine[^@\\s]*@sha256:[0-9a-f]{64} AS builder$"),
-    Ci = pinned(".github/workflows/lint-and-test.yml",
-                "\\{<<\"([0-9]+\\.[0-9]+\\.[0-9]+)\">>, true\\} -> halt\\(0\\);"),
+    %% The team images' tags name a date, not a release, so the builder and
+    %% lint each assert the release in a check step; this compares those, the
+    %% .tool-versions pin and this VM, to the patch.
+    Check = "\\{<<\"([0-9]+\\.[0-9]+\\.[0-9]+)\">>, true\\} -> halt\\(0\\);",
+    Image = pinned("Containerfile", Check),
+    Ci = pinned(".github/workflows/lint-and-test.yml", Check),
     Tools = pinned(".tool-versions", "^erlang ([0-9]+\\.[0-9]+\\.[0-9]+)$"),
     ?assertEqual([Image], lists:usort([Image, Ci, Tools, running_otp()])).
 
-image_build_pins_rebar3_by_sha256_test() ->
-    {ok, Containerfile} = file:read_file(alongside("Containerfile")),
-    ?assertMatch({match, _}, re:run(Containerfile, "releases/download/3\\.27\\.0/rebar3")),
-    ?assertMatch({match, _}, re:run(Containerfile, "\\b[0-9a-f]{64}  /usr/local/bin/rebar3")),
-    ?assertEqual(nomatch, binary:match(Containerfile, <<"s3.amazonaws.com/rebar3">>)).
+%% Build, CI and runtime are the team pair, named by dated tag AND digest, so a
+%% re-pushed tag cannot change what builds or what runs. (The build image
+%% carries rebar3 itself; the image build no longer downloads one.)
+images_are_the_digest_pinned_team_pair_test() ->
+    Digest = ":[0-9]{8}-[0-9]{4}@sha256:[0-9a-f]{64}",
+    ?assertMatch(<<_/binary>>,
+                 pinned("Containerfile",
+                        "^FROM (ghcr\\.io/macula-io/macula-ci-otp)" ++ Digest ++ " AS builder$")),
+    ?assertMatch(<<_/binary>>,
+                 pinned("Containerfile",
+                        "^FROM (ghcr\\.io/macula-io/macula-pq-runtime)" ++ Digest ++ "$")),
+    %% The builder and lint are the same build image, digest for digest.
+    ?assertEqual(pinned("Containerfile", "^FROM (ghcr\\.io/[^ ]+) AS builder$"),
+                 pinned(".github/workflows/lint-and-test.yml", "^\\s+image: (ghcr\\.io/[^\\s]+)$")).
+
+%% The image says which commit it was built from: build-push passes the sha,
+%% the runtime stage labels the image with it.
+the_image_carries_its_revision_test() ->
+    ?assertEqual(<<"REVISION">>, pinned("Containerfile", "^ARG (REVISION)=unknown$")),
+    ?assertEqual(<<"${REVISION}">>,
+                 pinned("Containerfile",
+                        "^LABEL org\\.opencontainers\\.image\\.revision=\"([^\"]+)\"$")),
+    ?assertEqual(<<"${{ github.sha }}">>,
+                 pinned(".github/workflows/build-push.yml", "^\\s+REVISION=(.+)$")).
 
 lint_runs_on_no_floating_image_test() ->
     {ok, Lint} = file:read_file(alongside(".github/workflows/lint-and-test.yml")),

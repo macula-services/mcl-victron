@@ -56,3 +56,6 @@ jobs:
           file: Containerfile
           push: true
           tags: ghcr.io/macula-services/mcl-victron:${{ steps.tag.outputs.tag }}
+          # The commit the image was built from, readable from the image itself.
+          build-args: |
+            REVISION=${{ github.sha }}
