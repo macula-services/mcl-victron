@@ -9,6 +9,10 @@ The macula 12 port of hecate-victron, on mcl_om.
 
 ### Changed
 
+- **mcl_om 0.27.** Its boot claim carries `MCL_SERVICE_NAME` and `MCL_BOX`,
+  which the realm's operator needs to see to admit it. The compose file sets
+  both, with `MCL_BOX` required. 0.27 no longer brings rocksdb, so the rocksdb
+  codec packages are gone from the builder, the runtime image and CI.
 - **One fact topic.** Readings were published each on its own
   `mri:device:<realm>/victron/<portal>/<service>/<instance>/<path>` string,
   which is not a macula 12 topic and put identifiers in topic names. They are

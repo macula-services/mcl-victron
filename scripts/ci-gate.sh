@@ -25,16 +25,11 @@ else
     BUILD_MOUNT=(-v mcl-victron-build:/src/_build)
 fi
 
-# ⚠ host00 is shared. rocksdb's build script ignores MAKEFLAGS and runs
-# -j$(nproc); ERLANG_ROCKSDB_BUILDOPTS caps it. A cold build needs a rocksdb
-# slot from the Supervisor first.
-exec podman run --rm \
-    -e ERLANG_ROCKSDB_BUILDOPTS=-j4 \
+# host00 is shared: four cores, 8 GB.
+exec podman run --rm --cpus=4 --memory=8g \
     -v "${ROOT}:/src" \
     -v mcl-victron-cargo-registry:/usr/local/cargo/registry \
     -w /src \
     "${BUILD_MOUNT[@]}" \
     "${IMAGE}" \
-    sh -c 'apt-get update -qq >/dev/null \
-        && apt-get install -y -qq --no-install-recommends libsnappy-dev liblz4-dev libzstd-dev libbz2-dev >/dev/null \
-        && "$@"' gate "$@"
+    "$@"

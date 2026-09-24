@@ -10,10 +10,9 @@
 FROM docker.io/hexpm/erlang:28.4.3-alpine-3.22.6@sha256:3815b99f486c2509baf556045bca0c5fc1c3ee50fb50a80590534f22cb48736c AS builder
 WORKDIR /build
 
-# openssl-dev/zstd-dev/snappy-dev/lz4-dev: the store is reckon-db (khepri/ra),
-# and mcl_om pulls in rocksdb (via barrel_docdb) as well.
-RUN apk add --no-cache git curl bash build-base cmake perl linux-headers \
-        openssl-dev zstd-dev snappy-dev lz4-dev
+# Nothing here builds rocksdb (mcl_om 0.27 dropped barrel_docdb; the store is
+# reckon-db on khepri/ra). cmake and perl stay for macula's NIF builds.
+RUN apk add --no-cache git curl bash build-base cmake perl linux-headers openssl-dev
 
 # macula's NIFs are Rust. Pinned to the release the CI image carries.
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
@@ -24,10 +23,6 @@ ENV RUSTFLAGS="-C target-feature=-crt-static"
 # macula's QUIC NIF: build it here rather than fetch a glibc prebuilt that
 # loads on the build host and fails on alpine.
 ENV MACULA_FORCE_SOURCE_BUILD=1
-
-# Parallelism of the RocksDB build, for a shared build host:
-# `--build-arg ERLANG_ROCKSDB_BUILDOPTS=-j4'. Unset, it takes every core.
-ARG ERLANG_ROCKSDB_BUILDOPTS
 
 RUN curl -fsSL https://github.com/erlang/rebar3/releases/download/3.27.0/rebar3 \
         -o /usr/local/bin/rebar3 \
@@ -48,11 +43,9 @@ FROM docker.io/alpine:3.22
 # LINKS THE PACKAGE TO THE REPOSITORY, so ghcr shows it there and it inherits
 # the repository's visibility.
 LABEL org.opencontainers.image.source="https://github.com/macula-services/mcl-victron"
-# libstdc++/libgcc: rocksdb is C++. zstd-libs/snappy/lz4-libs: the runtime
-# halves of the rocksdb codecs the builder compiled against; missing, the
-# release dies at boot loading the NIF.
-RUN apk add --no-cache ncurses-libs libstdc++ libgcc openssl ca-certificates curl \
-        zstd-libs snappy lz4-libs
+# libstdc++/libgcc for the NIFs, openssl for OTP's crypto, curl for the health
+# check. hecate-victron's runtime was libstdc++, ncurses-libs and openssl.
+RUN apk add --no-cache ncurses-libs libstdc++ libgcc openssl ca-certificates curl
 WORKDIR /app
 COPY --from=builder /build/_build/prod/rel/mcl_victron ./
 

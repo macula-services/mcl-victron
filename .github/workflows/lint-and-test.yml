@@ -43,12 +43,8 @@ jobs:
                 {<<"28.4.3">>, true} -> halt(0);
                 _                    -> halt(1)
             end.'
-      # libsnappy-dev liblz4-dev libzstd-dev libbz2-dev: rocksdb (via mcl_om's
-      # barrel_docdb) silently disables a codec whose dev lib is missing, and
-      # the NIF it builds then cannot open its store.
-      - run: |
-          apt-get update -qq
-          apt-get install -y -qq --no-install-recommends libsnappy-dev liblz4-dev libzstd-dev libbz2-dev
+      # No extra packages: since mcl_om 0.27 nothing here builds rocksdb. The
+      # store is reckon-db on khepri/ra.
       - run: rebar3 lint
       - run: rebar3 eunit
       - run: rebar3 dialyzer

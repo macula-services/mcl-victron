@@ -58,6 +58,12 @@ were current, so they are not replayed. A restart's replay of the store's
 history is skipped for the same reason. The emitter counts the readings it
 could not publish and logs the count at most once a minute.
 
+The store keeps every reading, and a device's stream grows without bound.
+Snapshots mean an aggregate's start doesn't replay the whole stream, but
+nothing limits the store's size yet. That decision waits until a real GX has
+run for a week, so the rate is known:
+[#1](https://github.com/macula-services/mcl-victron/issues/1).
+
 ## Build and test
 
 ```sh
@@ -82,6 +88,8 @@ socket.
 | `MACULA_STATION_SEEDS` | (required) | `host[:port],...` |
 | `MACULA_STATION_NODE_IDS` | (required) | the seeds' node ids, 64 hex each, in the same order |
 | `VICTRON_MQTT_HOST` | (required) | the GX device's LAN address |
+| `MCL_BOX` | (required) | the host it runs on. It labels the boot claim, and the realm admits no claim without it |
+| `MCL_SERVICE_NAME` | `mcl-victron` | the service, on the same claim |
 | `VICTRON_MQTT_PORT` | `1883` | dbus-flashmq's port |
 | `VICTRON_MQTT_KEEPALIVE_SEC` | `30` | seconds between keepalives |
 | `MCL_DATA_DIR` | `/data` | the reckon-db store |
