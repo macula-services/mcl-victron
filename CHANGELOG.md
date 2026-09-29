@@ -7,6 +7,13 @@ Versioning: [SemVer](https://semver.org/).
 
 ### Changed
 
+- **The store is this service's own** (mcl-om#10). From mcl_om 0.35 on, mcl_om opens no store and
+  brings no reckon-db or evoq application, so mcl-victron declares `reckon_db`, `evoq` and
+  `reckon_evoq` itself (with the floors mcl_om used to carry: evoq 1.26.1, reckon_evoq 2.7.2) and
+  `mcl_victron_app` opens the store with its own copy of the wiring (`mcl_victron_store`) before
+  `mcl_om:boot/1`. The service describes the store as one `event_store/0` map instead of the old
+  `store_id/0` and `data_dir/0` callbacks, which mcl_om 0.35 would warn about. mcl_om is bounded
+  `>= 0.34.0 and < 0.36.0`: it worked on 0.34 before 0.35 was tagged, and no later minor floats in.
 - **mcl_om `~> 0.28`, which requires macula 12.2.** Under macula 12.2 an older
   mcl_om lets a failed publish announcement kill the publishing process. The
   service answers `mcl-victron/info` with no code of its own (which also makes

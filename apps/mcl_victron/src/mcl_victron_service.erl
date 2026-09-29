@@ -6,15 +6,17 @@
 %%% (mcl_victron_facts). The store is the durable record: ingest never waits for
 %%% the mesh.
 %%%
-%%% It exports store_id/0 and data_dir/0, so mcl_om:boot/1 opens the store and
-%%% its evoq subscription before start/1 runs; config/sys.config.src carries the
-%%% evoq block that subscription needs.
+%%% The store is this service's own: event_store/0 describes it, and
+%%% mcl_victron_app opens it (mcl_victron_store) before mcl_om:boot/1, so it and
+%%% its evoq subscription are up when start/1 runs; config/sys.config.src
+%%% carries the evoq block that subscription needs. NOT store_id/0 and
+%%% data_dir/0: mcl_om 0.35 warns about a service exporting that pair.
 -module(mcl_victron_service).
 
 -behaviour(mcl_om_service).
 
 -export([info/0, start/1, stop/1, health/0, capabilities/0, identity_spec/0]).
--export([store_id/0, data_dir/0]).
+-export([event_store/0]).
 -export([hearing/3]).
 
 info() ->
@@ -54,15 +56,19 @@ identity_spec() ->
       resources => [<<"reading_recorded">>],
       ttl_days => 30}.
 
-%% @doc The reckon-db store. ⚠ Named in two places, here and in the `evoq'
-%% block of config/sys.config.src; mcl_victron_service_tests compares them.
--spec store_id() -> atom().
-store_id() -> mcl_victron_store.
-
-%% @doc Where the store lives: a volume, on a bulk drive on a fleet node. The
-%% default is what a laptop wants.
--spec data_dir() -> string().
-data_dir() -> chosen(os:getenv("MCL_DATA_DIR")).
+%% @doc The reckon-db store, as mcl_victron_app opens it. ⚠ Its id is named in
+%% two places, here and in the `evoq' block of config/sys.config.src;
+%% mcl_victron_service_tests compares them. Its dir is a volume, on a bulk drive
+%% on a fleet node; the default is what a laptop wants. Single node, no
+%% secondary indexes, no integrity key.
+-spec event_store() -> #{id := atom(), dir := string(), indexes := [term()],
+                         mode := single | cluster, integrity := disabled | map()}.
+event_store() ->
+    #{id => mcl_victron_store,
+      dir => chosen(os:getenv("MCL_DATA_DIR")),
+      indexes => [],
+      mode => single,
+      integrity => disabled}.
 
 chosen(false) -> "/tmp/mcl_victron";
 chosen("")    -> "/tmp/mcl_victron";

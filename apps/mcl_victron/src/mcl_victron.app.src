@@ -7,8 +7,10 @@
         kernel,
         stdlib,
         crypto,
-        %% Mesh SDK, realm identity, health, and the reckon-db store wiring.
+        %% Mesh SDK, realm identity, health.
         mcl_om,
+        %% This service's own event store (mcl_victron_store opens it).
+        reckon_db,
         evoq,
         reckon_evoq
     ]},

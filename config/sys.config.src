@@ -39,11 +39,11 @@
     {macula, [
         {crypto_profile, pq_hybrid}
     ]},
-    %% ⚠ MANDATORY BECAUSE THIS SERVICE EXPORTS store_id/0. mcl_om:boot/1 starts
-    %% a per-store evoq subscription that crashes on
+    %% ⚠ MANDATORY BECAUSE THIS SERVICE OWNS A STORE. mcl_victron_store starts a
+    %% per-store evoq subscription that crashes on
     %% {not_configured, event_store_adapter} without this block, and evoq starts
     %% before any service's start/2, so nothing can inject it later. The
-    %% store_id MUST be mcl_victron_service:store_id/0; a test compares them.
+    %% store_id MUST be mcl_victron_service:event_store/0's id; a test compares them.
     {evoq, [
         {event_store_adapter,    reckon_evoq_adapter},
         {subscription_adapter,   reckon_evoq_adapter},

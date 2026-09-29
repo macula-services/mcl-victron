@@ -1,8 +1,8 @@
 %% @doc record_victron_reading against a real reckon-db store through evoq.
 %%
-%% The store is opened by mcl_om_store:ensure/2, the same call mcl_om:boot/1
-%% makes for this service, so the dispatch, the aggregate, the event and its
-%% stream are the ones a running node has.
+%% The store is opened by mcl_victron_store:ensure/2, the same wiring
+%% mcl_victron_app opens it with, so the dispatch, the aggregate, the event and
+%% its stream are the ones a running node has.
 -module(record_victron_reading_tests).
 
 -include_lib("eunit/include/eunit.hrl").
@@ -121,7 +121,7 @@ start_store() ->
                    {snapshot_store_adapter, reckon_evoq_adapter},
                    {store_id, ?STORE}]],
     {ok, Started} = application:ensure_all_started([reckon_db, evoq, reckon_evoq]),
-    ok = mcl_om_store:ensure(?STORE, Dir),
+    ok = mcl_victron_store:ensure(?STORE, Dir),
     ok = application:set_env(mcl_victron, realm_name, "io.macula"),
     meck:new(mcl_om, [passthrough]),
     meck:new(macula, [passthrough]),

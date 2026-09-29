@@ -47,23 +47,53 @@ identity_spec_names_the_scope_test() ->
     ?assert(lists:all(fun is_binary/1, Actions ++ Resources)),
     ?assert(is_integer(Ttl) andalso Ttl > 0).
 
-%% ⚠ THE STORE IS NAMED TWICE: store_id/0, which mcl_om opens, and the evoq
-%% block of the release config, which evoq resolves. Disagreeing opens one
-%% store and addresses another.
+%% ⚠ THE STORE IS NAMED TWICE: event_store/0's id, which mcl_victron_app opens,
+%% and the evoq block of the release config, which evoq resolves. Disagreeing
+%% opens one store and addresses another.
 the_store_is_the_one_evoq_is_configured_for_test() ->
     %% Read, not consulted: the ${VAR} placeholders are not Erlang terms.
     Named = pinned("config/sys.config.src", "\\{store_id,\\s+([a-z_]+)\\}"),
-    ?assertEqual(atom_to_binary(?SERVICE:store_id()), Named).
+    ?assertEqual(atom_to_binary(store_id()), Named).
 
 the_store_is_the_one_the_command_dispatches_to_test() ->
     {ok, Source} = file:read_file(alongside(
                      "apps/mcl_victron/src/record_victron_reading/maybe_record_victron_reading.erl")),
-    ?assertNotEqual(nomatch, binary:match(Source, atom_to_binary(?SERVICE:store_id()))).
+    ?assertNotEqual(nomatch, binary:match(Source, atom_to_binary(store_id()))).
 
 the_data_dir_follows_the_environment_test() ->
+    Was = os:getenv("MCL_DATA_DIR"),
     os:putenv("MCL_DATA_DIR", "/data"),
-    ?assertEqual("/data", ?SERVICE:data_dir()),
-    os:unsetenv("MCL_DATA_DIR").
+    Dir = maps:get(dir, ?SERVICE:event_store()),
+    restore("MCL_DATA_DIR", Was),
+    ?assertEqual("/data", Dir).
+
+%% THE STORE IS THIS SERVICE'S OWN (mcl_om opens none from 0.35): mcl_victron_app
+%% opens it before mcl_om:boot/1, so ingest and the emitter find it up.
+the_store_is_opened_before_the_service_boots_test() ->
+    {ok, App} = file:read_file(alongside("apps/mcl_victron/src/mcl_victron_app.erl")),
+    {Open, _} = binary:match(App, <<"mcl_victron_store:open(">>),
+    {Boot, _} = binary:match(App, <<"mcl_om:boot(">>),
+    ?assert(Open < Boot).
+
+%% ⚠ NOT THE OLD CONTRACT'S NAMES. mcl_om 0.35 warns at every boot about a
+%% service module exporting store_id/0 and data_dir/0 together: that pair is
+%% how a service still waiting for mcl_om to open its store looks.
+exports_none_of_the_old_store_callbacks_test() ->
+    _ = code:ensure_loaded(?SERVICE),
+    ?assertEqual([], [F || F <- [store_id, data_dir, store_indexes, store_mode, store_integrity],
+                           erlang:function_exported(?SERVICE, F, 0)]).
+
+%% The applications the store needs are this service's to declare: mcl_om brings
+%% none from 0.35.
+declares_the_store_applications_test() ->
+    _ = application:load(?APP),
+    {ok, Apps} = application:get_key(?APP, applications),
+    ?assertEqual([], [A || A <- [reckon_db, evoq, reckon_evoq], not lists:member(A, Apps)]).
+
+store_id() -> maps:get(id, ?SERVICE:event_store()).
+
+restore(Var, false) -> os:unsetenv(Var);
+restore(Var, Value) -> os:putenv(Var, Value).
 
 %% A receiver retrying a wrong or absent broker forever is alive and useless;
 %% health is whether readings can arrive.
