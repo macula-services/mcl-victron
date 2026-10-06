@@ -29,7 +29,7 @@ on:
 # leave :latest on whichever finished last.
 concurrency:
   group: build-and-push-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-and-push:
