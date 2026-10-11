@@ -1,5 +1,19 @@
-# mcl-victron
+<!-- Service README template: swap the service name in the badge URLs and the
+     package link; everything else is shared. -->
 
+[![CI](https://img.shields.io/github/actions/workflow/status/macula-services/mcl-victron/lint-and-test.yml?branch=main&label=CI)](https://github.com/macula-services/mcl-victron/actions/workflows/lint-and-test.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-macula--services%2Fmcl-victron-blue.svg)](https://github.com/macula-services/mcl-victron/pkgs/container/mcl-victron)
+[![BEAM](https://img.shields.io/badge/beam-28%2B-A90533?logo=erlang&logoColor=white)](https://www.erlang.org)
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-support-ea4aaa.svg?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rgfaber)
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/macula-full-dark.svg">
+    <img src="assets/macula-full-light.svg" alt="Macula" width="320">
+  </picture>
+</p>
+---
 **Victron energy telemetry on the mesh.** mcl-victron watches a Victron GX
 device (Cerbo, Venus GX) through its `dbus-flashmq` MQTT broker on the LAN.
 It records every reading in its own [reckon-db](https://hex.pm/packages/reckon_db)
