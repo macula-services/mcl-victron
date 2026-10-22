@@ -45,6 +45,8 @@ keepalives, and it never writes to the broker.
 | `evoq` / `reckon_evoq` / `reckon_db` | libraries, `>= 1.26.1` / `>= 2.7.2` / `~> 5.4` | Event sourcing for the one aggregate, over this service's own store |
 | The host environment | environment and volumes | `VICTRON_MQTT_HOST`, `VICTRON_MQTT_PORT`, `VICTRON_MQTT_KEEPALIVE_SEC`, `MCL_DATA_DIR`, `MCL_HEALTH_PORT`, `MCL_BOX`, and the realm and station variables. The identity key is a named volume at `/etc/mcl/secrets`; the store is a second volume at `MCL_DATA_DIR` |
 
+**Where the station list comes from.** It is not in `config/sys.config.src`: `mcl_om` reads `MACULA_STATION_SEEDS` and `MACULA_STATION_NODE_IDS` from the environment at boot, paired index for index, so this repository pins no station and the list may be any length.
+
 `config/sys.config.src` fixes the org, `mcl-victron`, which the fact's topic
 carries, and the realm name; the service refuses to start unless
 `sha256(MCL_REALM_NAME)` is `MCL_REALM`. It must share a LAN with the GX:
@@ -71,5 +73,5 @@ classes plus a `prefers-color-scheme` dark block, never CSS custom properties,
 which `rsvg-convert` renders black.
 
 The check that keeps them here is the `c4-model` job in
-`.github/workflows/build-push.yml`. It is red until both files exist and are
+`.github/workflows/c4-model.yml`. It is red until both files exist and are
 shown, and it stays red if either one goes missing.
