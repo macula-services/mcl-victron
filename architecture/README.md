@@ -6,8 +6,8 @@ of, without reading it.*
 **Status: one fact, no procedures of its own.** The service subscribes to a Victron GX
 device's dbus-flashmq MQTT broker on the LAN, records every reading in its own
 reckon-db store, and publishes each one live on the mesh. `capabilities/0` is
-empty, and `mcl_om` adds the open `info` and `get_limits` to every service: those
-two are the only procedures carrying its name, and the readings are its output.
+empty, and `mcl_om` adds the open `info` and `get_limits` to every service, so
+those are the procedures carrying its name; the readings are its output.
 
 ## Level 1: system context
 
@@ -32,7 +32,7 @@ keepalives, and it never writes to the broker.
 | Component | Technology | Responsibility |
 | --- | --- | --- |
 | `mcl_victron_app` | OTP application | Opens the store from `mcl_victron_service:event_store/0`, then `mcl_om:boot/1`. Ingest starts only after the store exists |
-| `mcl_victron_service` | the `mcl_om_service` behaviour | The six callbacks plus `event_store/0`. `capabilities/0` is empty; `health/0` is `degraded` while the receiver is not connected or the broker has been silent for 1.5 keepalives; `identity_spec/0` asks for scope `mcl-victron` |
+| `mcl_victron_service` | the `mcl_om_service` behaviour | The `mcl_om_service` callbacks plus `event_store/0`. `capabilities/0` is empty; `health/0` is `degraded` while the receiver is not connected or the broker has been silent for 1.5 keepalives; `identity_spec/0` asks for scope `mcl-victron` |
 | `mcl_victron_sup` | supervisor, `one_for_one` | Two children, the emitter first so it is registered before the first reading is recorded |
 | `receive_victron_mqtt_sup` | supervisor, `one_for_one` | One permanent child, kept separate so the emitter and the receiver restart apart |
 | `receive_victron_mqtt` | `gen_server`, MQTT 3.1.1 over `gen_tcp` | Subscribes to `N/+/+/+/#` and dispatches one command per notification; `mqtt_packet` builds and parses the frames and `victron_topic` splits a topic into portal, service, instance and path. Sends both keepalives and redials a broker silent for 1.5 of them |
@@ -40,7 +40,7 @@ keepalives, and it never writes to the broker.
 | `maybe_record_victron_reading` | command handler, plain Erlang module | Dispatches the command to the device's stream, whose id is `victron-` plus the first 128 bits of `sha256(portal_id)` |
 | `victron_device_aggregate` | evoq aggregate | `victron_device_state` applies each event; the aggregate appends `victron_reading_recorded_v1` to the device's stream. Snapshots avoid a full replay, but nothing limits the store's size yet (issue #1) |
 | `mcl_victron_store` | reckon-db store, single node | Opens the store, waits until `reckon_db` lists it, and starts the per-store evoq subscription the emitter receives readings on. Id `mcl_victron_store` is also named in `sys.config.src`, and a test compares the two |
-| `on_victron_reading_recorded_to_mesh` | `evoq_event_handler` | The only place this service's own code publishes to the mesh: one `reading_recorded_v1` fact per reading, built by `mcl_victron_facts`, published from a monitored worker with at most 64 in flight. A reading the mesh does not take is dropped and counted |
+| `on_victron_reading_recorded_to_mesh` | `evoq_event_handler` | This service's own code publishes to the mesh here and nowhere else: one `reading_recorded_v1` fact per reading, built by `mcl_victron_facts`, published from a monitored worker with at most 64 in flight. A reading the mesh does not take is dropped and counted |
 | `mcl_om` | library, `~> 1.4` | `boot/1`: loads the node identity key, joins the realm, dials the pinned stations over QUIC and serves `/health` on `MCL_HEALTH_PORT` |
 | macula | library, `~> 16.0`, wire 1.0 | QUIC transport, the publish path the emitter calls, and the signed records the mesh DHT holds |
 | `evoq` / `reckon_evoq` / `reckon_db` | libraries, `>= 1.26.1` / `>= 2.7.2` / `~> 5.4` | Event sourcing for the one aggregate, over this service's own store |

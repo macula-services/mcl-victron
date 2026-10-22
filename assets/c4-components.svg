@@ -53,13 +53,14 @@
 <text class="t-desc" x="48" y="140">Opens this service's own reckon-db store from mcl_victron_service:event_store/0,</text>
 <text class="t-desc" x="48" y="156">then calls mcl_om:boot/1. Ingest starts only after the store exists, so no</text>
 <text class="t-desc" x="48" y="172">reading is dispatched against a store that is not there.</text>
-<rect class="b-sys" x="32" y="222" width="540" height="136" rx="10"/>
+<rect class="b-sys" x="32" y="222" width="540" height="152" rx="10"/>
 <text class="t-code" x="48" y="250">mcl_victron_service</text>
 <text class="t-type" x="48" y="268">[mcl_om_service behaviour]</text>
-<text class="t-desc" x="48" y="292">The six callbacks mcl_om resolves by name, plus event_store/0. capabilities/0</text>
-<text class="t-desc" x="48" y="308">is empty: nothing is callable, the readings are the output. health/0 is</text>
-<text class="t-desc" x="48" y="324">degraded while the receiver is not connected, or the broker has been silent</text>
-<text class="t-desc" x="48" y="340">for longer than 1.5 keepalives. identity_spec/0 asks for scope mcl-victron.</text>
+<text class="t-desc" x="48" y="292">The mcl_om_service callbacks, plus event_store/0.</text>
+<text class="t-desc" x="48" y="308">capabilities/0 is empty; mcl_om adds the open info and get_limits.</text>
+<text class="t-desc" x="48" y="324">The readings are the output. health/0 is</text>
+<text class="t-desc" x="48" y="340">degraded while the receiver is not connected, or the</text>
+<text class="t-desc" x="48" y="356">broker has been silent past 1.5 keepalives. identity_spec/0 asks mcl-victron.</text>
 <rect class="b-cmp" x="32" y="390" width="540" height="120" rx="10"/>
 <text class="t-code" x="48" y="418">mcl_victron_sup</text>
 <text class="t-type" x="48" y="436">[supervisor, one_for_one]</text>
@@ -82,7 +83,7 @@
 <rect class="b-cmp" x="588" y="70" width="540" height="168" rx="10"/>
 <text class="t-code" x="604" y="98">on_victron_reading_recorded_to_mesh</text>
 <text class="t-type" x="604" y="116">[evoq_event_handler]</text>
-<text class="t-desc" x="604" y="140">The only place this service's own code publishes to the mesh. Each</text>
+<text class="t-desc" x="604" y="140">This service's own code publishes to the mesh here and nowhere else. Each</text>
 <text class="t-desc" x="604" y="156">recorded reading becomes one reading_recorded_v1 fact, built by</text>
 <text class="t-desc" x="604" y="172">mcl_victron_facts, published from a monitored worker with at most 64</text>
 <text class="t-desc" x="604" y="188">in flight. A reading the mesh does not take is dropped and counted,</text>
@@ -139,7 +140,7 @@
 <text class="t-desc" x="48" y="1062">boot/1: loads the node identity key,</text>
 <text class="t-desc" x="48" y="1078">joins the realm, dials the pinned</text>
 <text class="t-desc" x="48" y="1094">stations over QUIC and serves /health</text>
-<text class="t-desc" x="48" y="1110">on MCL_HEALTH_PORT. No capabilities.</text>
+<text class="t-desc" x="48" y="1110">on MCL_HEALTH_PORT and registers its capabilities.</text>
 <rect class="b-mac" x="404" y="992" width="352" height="136" rx="10"/>
 <text class="t-code" x="420" y="1020">macula</text>
 <text class="t-type" x="420" y="1038">[library, ~&gt; 16.0, wire 1.0]</text>

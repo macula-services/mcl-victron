@@ -46,7 +46,8 @@ hearing({connected, LastHeard}, Now, KaMs) when Now - LastHeard > KaMs * 3 div 2
 hearing({connected, _LastHeard}, _Now, _KaMs) ->
     ok.
 
-%% Nothing callable: the readings are the output. A query desk would add one.
+%% capabilities/0 is empty: the readings are the output. mcl_om adds the open
+%% info and get_limits to every service anyway; a query desk would add one of ours.
 capabilities() -> [].
 
 %% THE AUTHORITY THIS SERVICE ASKS THE REALM FOR: publishing its one fact.

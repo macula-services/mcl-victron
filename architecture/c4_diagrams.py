@@ -178,11 +178,12 @@ def components():
           ["Opens this service's own reckon-db store from mcl_victron_service:event_store/0,",
            "then calls mcl_om:boot/1. Ingest starts only after the store exists, so no",
            "reading is dispatched against a store that is not there."], code=True)
-    d.box("b-sys", 32, 222, 540, 136, "mcl_victron_service", "[mcl_om_service behaviour]",
-          ["The six callbacks mcl_om resolves by name, plus event_store/0. capabilities/0",
-           "is empty: nothing is callable, the readings are the output. health/0 is",
-           "degraded while the receiver is not connected, or the broker has been silent",
-           "for longer than 1.5 keepalives. identity_spec/0 asks for scope mcl-victron."], code=True)
+    d.box("b-sys", 32, 222, 540, 152, "mcl_victron_service", "[mcl_om_service behaviour]",
+          ["The mcl_om_service callbacks, plus event_store/0.",
+           "capabilities/0 is empty; mcl_om adds the open info and get_limits.",
+           "The readings are the output. health/0 is",
+           "degraded while the receiver is not connected, or the",
+           "broker has been silent past 1.5 keepalives. identity_spec/0 asks mcl-victron."], code=True)
     d.box("b-cmp", 32, 390, 540, 120, "mcl_victron_sup", "[supervisor, one_for_one]",
           ["Two children, the emitter first so it is registered before the first reading",
            "is recorded: on_victron_reading_recorded_to_mesh, then the receiver's own",
@@ -198,7 +199,7 @@ def components():
            "keeps publishing. A broker silent for 1.5 keepalives is left and redialled."], code=True)
 
     d.box("b-cmp", 588, 70, 540, 168, "on_victron_reading_recorded_to_mesh", "[evoq_event_handler]",
-          ["The only place this service's own code publishes to the mesh. Each",
+          ["This service's own code publishes to the mesh here and nowhere else. Each",
            "recorded reading becomes one reading_recorded_v1 fact, built by",
            "mcl_victron_facts, published from a monitored worker with at most 64",
            "in flight. A reading the mesh does not take is dropped and counted,",
@@ -238,7 +239,7 @@ def components():
           ["boot/1: loads the node identity key,",
            "joins the realm, dials the pinned",
            "stations over QUIC and serves /health",
-           "on MCL_HEALTH_PORT. No capabilities."], code=True)
+           "on MCL_HEALTH_PORT and registers its capabilities."], code=True)
     d.box("b-mac", 404, 992, 352, 136, "macula", "[library, ~> 16.0, wire 1.0]",
           ["QUIC transport, the publish path the",
            "emitter calls, and the signed records",

@@ -36,7 +36,8 @@ info_version_matches_the_application_test() ->
     #{version := Reported} = ?SERVICE:info(),
     ?assertEqual(list_to_binary(Vsn), Reported).
 
-%% Nothing callable: the readings are the output.
+%% capabilities/0 is empty: the readings are the output. mcl_om adds the open
+%% info and get_limits to every service.
 advertises_nothing_test() ->
     ?assertEqual([], ?SERVICE:capabilities()).
 

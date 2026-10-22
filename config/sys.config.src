@@ -1,4 +1,4 @@
-%% Substituted by relx at boot: every ${VAR} must resolve or the node does not
+%% Every ${VAR} must resolve at boot, or the node does not
 %% start. That is the right failure. A service with a half-configured realm
 %% announces itself where nobody can attribute it, and looks healthy.
 [
