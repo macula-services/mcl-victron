@@ -103,7 +103,7 @@
 <text class="t-desc" x="604" y="540">nothing limits the store's size yet (issue #1).</text>
 <rect class="b-cmp" x="588" y="590" width="540" height="136" rx="10"/>
 <text class="t-code" x="604" y="618">maybe_record_victron_reading</text>
-<text class="t-type" x="604" y="636">[evoq_command_handler]</text>
+<text class="t-type" x="604" y="636">[command handler, plain Erlang module]</text>
 <text class="t-desc" x="604" y="660">Handles the command and dispatches it to the device's stream. The stream id</text>
 <text class="t-desc" x="604" y="676">is victron- followed by the first 128 bits of sha256(portal_id), in hex, so</text>
 <text class="t-desc" x="604" y="692">one GX device is one stream whatever its LAN address, and a device that has</text>

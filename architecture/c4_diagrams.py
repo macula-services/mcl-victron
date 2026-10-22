@@ -213,7 +213,7 @@ def components():
            "appends victron_reading_recorded_v1 to the device's stream in mcl_victron_store.",
            "Snapshots keep an aggregate's start from replaying the whole stream, but",
            "nothing limits the store's size yet (issue #1)."], code=True)
-    d.box("b-cmp", 588, 590, 540, 136, "maybe_record_victron_reading", "[evoq_command_handler]",
+    d.box("b-cmp", 588, 590, 540, 136, "maybe_record_victron_reading", "[command handler, plain Erlang module]",
           ["Handles the command and dispatches it to the device's stream. The stream id",
            "is victron- followed by the first 128 bits of sha256(portal_id), in hex, so",
            "one GX device is one stream whatever its LAN address, and a device that has",
