@@ -138,7 +138,7 @@ def context():
     d.box("b-ext", 740, 30, 320, 136, "Consumers of the readings", "[External system]",
           ["Subscribe to one fact and filter it by", "portal, service and D-Bus path: the",
            "device and the path are in the payload,", "not in the topic name."])
-    d.box("b-sys", 390, 220, 320, 152, "mcl-victron", "[mcl_om mesh service, own box]",
+    d.box("b-sys", 390, 220, 320, 152, "mcl-victron", "[mcl_om mesh service]",
           ["Watches one GX device's dbus-flashmq", "broker on the LAN, records every",
            "reading in its own reckon-db store,", "and publishes each one live as",
            "reading_recorded_v1."])
@@ -150,20 +150,20 @@ def context():
            "carry MCL_BOX."])
     d.box("b-mac", 740, 470, 320, 136, "Macula stations, mesh DHT", "[Macula infrastructure]",
           ["The pinned seeds in", "MACULA_STATION_SEEDS carry the fact",
-           "over QUIC; the DHT holds the node's", "advertisement."])
+           "over QUIC; the DHT holds an", "advertisement per org procedure."])
 
     d.edge("M200 150V190H470V220")
-    d.text("t-rel", 208, 172, "deploys; sets MCL_BOX")
+    d.text("t-rel", 214, 172, "deploys; sets MCL_BOX")
     d.text("t-rel", 208, 188, "and the broker's address")
     d.edge("M710 300H900V166")
     d.text("t-rel", 718, 292, "publishes reading_recorded_v1")
     d.edge("M200 470V420H470V372")
-    d.text("t-rel", 208, 440, "publishes N/+/+/+/# over")
+    d.text("t-rel", 214, 440, "publishes N/+/+/+/# over")
     d.text("t-rel", 208, 456, "MQTT, and answers keepalives")
     d.edge("M550 372V470")
-    d.text("t-rel", 558, 404, "boot claim, MCL_BOX")
+    d.text("t-rel", 556, 452, "boot claim, MCL_BOX")
     d.edge("M630 372V430H900V470")
-    d.text("t-rel", 638, 422, "publishes the one fact")
+    d.text("t-rel", 644, 422, "publishes the one fact")
     d.text("t-desc", 40, 640, "The GX speaks first: the service is an MQTT client that subscribes and sends keepalives, and it never writes to the broker.")
     d.text("t-desc", 40, 658, "A reading the mesh does not take is dropped and kept in the store, never replayed, because an old reading would arrive looking current.")
     d.legend(716, boundary=False)
@@ -184,7 +184,7 @@ def components():
            "The readings are the output. health/0 is",
            "degraded while the receiver is not connected, or the",
            "broker has been silent past 1.5 keepalives. identity_spec/0 asks mcl-victron."], code=True)
-    d.box("b-cmp", 32, 390, 540, 120, "mcl_victron_sup", "[supervisor, one_for_one]",
+    d.box("b-cmp", 32, 402, 540, 120, "mcl_victron_sup", "[supervisor, one_for_one]",
           ["Two children, the emitter first so it is registered before the first reading",
            "is recorded: on_victron_reading_recorded_to_mesh, then the receiver's own",
            "supervisor."], code=True)
@@ -205,7 +205,7 @@ def components():
            "in flight. A reading the mesh does not take is dropped and counted,",
            "never queued, and the count is logged once a minute. A restart's",
            "replay of the store's history is skipped: it is not live."], code=True)
-    d.box("b-cmp", 588, 254, 540, 136, "mcl_victron_store", "[reckon-db store, single node]",
+    d.box("b-cmp", 588, 266, 540, 136, "mcl_victron_store", "[reckon-db store, single node]",
           ["Opens the store mcl_victron_service:event_store/0 describes, waits until",
            "reckon_db lists it, and starts the per-store evoq subscription the emitter",
            "receives readings on. Id mcl_victron_store is also named in sys.config.src",
@@ -226,11 +226,11 @@ def components():
            "{\"value\": null} are absences, not measurements, so no command is built."], code=True)
 
     d.edge("M200 190V222"); d.text("t-rel", 208, 214, "boots with")
-    d.edge("M200 358V390"); d.text("t-rel", 208, 382, "start/1 starts")
+    d.edge("M200 358V402"); d.text("t-rel", 208, 390, "start/1 starts")
     d.edge("M200 510V542"); d.text("t-rel", 208, 534, "starts the receiver's supervisor")
     d.edge("M200 646V678"); d.text("t-rel", 208, 670, "supervises")
-    d.edge("M740 254V222"); d.text("t-rel", 748, 246, "the per-store subscription hands it over")
-    d.edge("M740 422V390"); d.text("t-rel", 748, 414, "appends victron_reading_recorded_v1")
+    d.edge("M740 266V222"); d.text("t-rel", 748, 254, "the per-store subscription hands it over")
+    d.edge("M740 422V402"); d.text("t-rel", 748, 416, "appends victron_reading_recorded_v1")
     d.edge("M740 590V558"); d.text("t-rel", 748, 582, "dispatched to the device's stream")
     d.edge("M740 758V726"); d.text("t-rel", 748, 750, "one command per notification")
     d.edge("M300 830V938H740V894"); d.text("t-rel", 310, 930, "every notification becomes a command")
@@ -252,7 +252,7 @@ def components():
     d.box("b-ext", 40, 1160, 1080, 120, "The host environment", "[read by the service; both volumes are in the compose file]",
           ["VICTRON_MQTT_HOST, VICTRON_MQTT_PORT and VICTRON_MQTT_KEEPALIVE_SEC, MCL_DATA_DIR, MCL_HEALTH_PORT, MCL_BOX,",
            "and the realm and station variables. The identity key is /etc/mcl/secrets/identity.key, a named volume; the",
-           "store and the recordings are on a second volume at MCL_DATA_DIR, a bulk drive on any fleet node."], code=True)
+           "store and the recordings are on a second volume at MCL_DATA_DIR."], code=True)
     d.edge("M1128 316H1140V970H950V992"); d.text("t-rel", 1120, 400, "events in and out", anchor="end")
     d.text("t-desc", 40, 1320, "config/sys.config.src fixes the org, mcl-victron, which the fact's topic carries, and the realm name; the service refuses")
     d.text("t-desc", 40, 1338, "to start unless sha256 of that name is MCL_REALM. It must share a LAN with the GX: dbus-flashmq serves MQTT on the local network only.")

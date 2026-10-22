@@ -3,7 +3,7 @@
 *This exists so a reader can see what mcl-victron talks to, and what it is made
 of, without reading it.*
 
-**Status: one fact, no procedures of its own.** The service subscribes to a Victron GX
+**Status: it publishes a fact and offers no procedures of its own.** The service subscribes to a Victron GX
 device's dbus-flashmq MQTT broker on the LAN, records every reading in its own
 reckon-db store, and publishes each one live on the mesh. `capabilities/0` is
 empty, and `mcl_om` adds the open `info` and `get_limits` to every service, so

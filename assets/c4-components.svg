@@ -61,12 +61,12 @@
 <text class="t-desc" x="48" y="324">The readings are the output. health/0 is</text>
 <text class="t-desc" x="48" y="340">degraded while the receiver is not connected, or the</text>
 <text class="t-desc" x="48" y="356">broker has been silent past 1.5 keepalives. identity_spec/0 asks mcl-victron.</text>
-<rect class="b-cmp" x="32" y="390" width="540" height="120" rx="10"/>
-<text class="t-code" x="48" y="418">mcl_victron_sup</text>
-<text class="t-type" x="48" y="436">[supervisor, one_for_one]</text>
-<text class="t-desc" x="48" y="460">Two children, the emitter first so it is registered before the first reading</text>
-<text class="t-desc" x="48" y="476">is recorded: on_victron_reading_recorded_to_mesh, then the receiver's own</text>
-<text class="t-desc" x="48" y="492">supervisor.</text>
+<rect class="b-cmp" x="32" y="402" width="540" height="120" rx="10"/>
+<text class="t-code" x="48" y="430">mcl_victron_sup</text>
+<text class="t-type" x="48" y="448">[supervisor, one_for_one]</text>
+<text class="t-desc" x="48" y="472">Two children, the emitter first so it is registered before the first reading</text>
+<text class="t-desc" x="48" y="488">is recorded: on_victron_reading_recorded_to_mesh, then the receiver's own</text>
+<text class="t-desc" x="48" y="504">supervisor.</text>
 <rect class="b-cmp" x="32" y="542" width="540" height="104" rx="10"/>
 <text class="t-code" x="48" y="570">receive_victron_mqtt_sup</text>
 <text class="t-type" x="48" y="588">[supervisor, one_for_one]</text>
@@ -89,13 +89,13 @@
 <text class="t-desc" x="604" y="188">in flight. A reading the mesh does not take is dropped and counted,</text>
 <text class="t-desc" x="604" y="204">never queued, and the count is logged once a minute. A restart's</text>
 <text class="t-desc" x="604" y="220">replay of the store's history is skipped: it is not live.</text>
-<rect class="b-cmp" x="588" y="254" width="540" height="136" rx="10"/>
-<text class="t-code" x="604" y="282">mcl_victron_store</text>
-<text class="t-type" x="604" y="300">[reckon-db store, single node]</text>
-<text class="t-desc" x="604" y="324">Opens the store mcl_victron_service:event_store/0 describes, waits until</text>
-<text class="t-desc" x="604" y="340">reckon_db lists it, and starts the per-store evoq subscription the emitter</text>
-<text class="t-desc" x="604" y="356">receives readings on. Id mcl_victron_store is also named in sys.config.src</text>
-<text class="t-desc" x="604" y="372">and a test compares the two. Single node, no indexes, no integrity key.</text>
+<rect class="b-cmp" x="588" y="266" width="540" height="136" rx="10"/>
+<text class="t-code" x="604" y="294">mcl_victron_store</text>
+<text class="t-type" x="604" y="312">[reckon-db store, single node]</text>
+<text class="t-desc" x="604" y="336">Opens the store mcl_victron_service:event_store/0 describes, waits until</text>
+<text class="t-desc" x="604" y="352">reckon_db lists it, and starts the per-store evoq subscription the emitter</text>
+<text class="t-desc" x="604" y="368">receives readings on. Id mcl_victron_store is also named in sys.config.src</text>
+<text class="t-desc" x="604" y="384">and a test compares the two. Single node, no indexes, no integrity key.</text>
 <rect class="b-cmp" x="588" y="422" width="540" height="136" rx="10"/>
 <text class="t-code" x="604" y="450">victron_device_aggregate</text>
 <text class="t-type" x="604" y="468">[evoq aggregate]</text>
@@ -118,16 +118,16 @@
 <text class="t-desc" x="604" y="860">{"value": null} are absences, not measurements, so no command is built.</text>
 <path class="edge" d="M200 190V222" marker-end="url(#a)"/>
 <text class="t-rel" x="208" y="214">boots with</text>
-<path class="edge" d="M200 358V390" marker-end="url(#a)"/>
-<text class="t-rel" x="208" y="382">start/1 starts</text>
+<path class="edge" d="M200 358V402" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="390">start/1 starts</text>
 <path class="edge" d="M200 510V542" marker-end="url(#a)"/>
 <text class="t-rel" x="208" y="534">starts the receiver's supervisor</text>
 <path class="edge" d="M200 646V678" marker-end="url(#a)"/>
 <text class="t-rel" x="208" y="670">supervises</text>
-<path class="edge" d="M740 254V222" marker-end="url(#a)"/>
-<text class="t-rel" x="748" y="246">the per-store subscription hands it over</text>
-<path class="edge" d="M740 422V390" marker-end="url(#a)"/>
-<text class="t-rel" x="748" y="414">appends victron_reading_recorded_v1</text>
+<path class="edge" d="M740 266V222" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="254">the per-store subscription hands it over</text>
+<path class="edge" d="M740 422V402" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="416">appends victron_reading_recorded_v1</text>
 <path class="edge" d="M740 590V558" marker-end="url(#a)"/>
 <text class="t-rel" x="748" y="582">dispatched to the device's stream</text>
 <path class="edge" d="M740 758V726" marker-end="url(#a)"/>
@@ -159,7 +159,7 @@
 <text class="t-type" x="56" y="1206">[read by the service; both volumes are in the compose file]</text>
 <text class="t-desc" x="56" y="1230">VICTRON_MQTT_HOST, VICTRON_MQTT_PORT and VICTRON_MQTT_KEEPALIVE_SEC, MCL_DATA_DIR, MCL_HEALTH_PORT, MCL_BOX,</text>
 <text class="t-desc" x="56" y="1246">and the realm and station variables. The identity key is /etc/mcl/secrets/identity.key, a named volume; the</text>
-<text class="t-desc" x="56" y="1262">store and the recordings are on a second volume at MCL_DATA_DIR, a bulk drive on any fleet node.</text>
+<text class="t-desc" x="56" y="1262">store and the recordings are on a second volume at MCL_DATA_DIR.</text>
 <path class="edge" d="M1128 316H1140V970H950V992" marker-end="url(#a)"/>
 <text class="t-rel" x="1120" y="400" text-anchor="end">events in and out</text>
 <text class="t-desc" x="40" y="1320">config/sys.config.src fixes the org, mcl-victron, which the fact's topic carries, and the realm name; the service refuses</text>

@@ -61,7 +61,7 @@
 <text class="t-desc" x="756" y="148">not in the topic name.</text>
 <rect class="b-sys" x="390" y="220" width="320" height="152" rx="10"/>
 <text class="t-name" x="406" y="248">mcl-victron</text>
-<text class="t-type" x="406" y="266">[mcl_om mesh service, own box]</text>
+<text class="t-type" x="406" y="266">[mcl_om mesh service]</text>
 <text class="t-desc" x="406" y="290">Watches one GX device's dbus-flashmq</text>
 <text class="t-desc" x="406" y="306">broker on the LAN, records every</text>
 <text class="t-desc" x="406" y="322">reading in its own reckon-db store,</text>
@@ -85,20 +85,20 @@
 <text class="t-type" x="756" y="516">[Macula infrastructure]</text>
 <text class="t-desc" x="756" y="540">The pinned seeds in</text>
 <text class="t-desc" x="756" y="556">MACULA_STATION_SEEDS carry the fact</text>
-<text class="t-desc" x="756" y="572">over QUIC; the DHT holds the node's</text>
-<text class="t-desc" x="756" y="588">advertisement.</text>
+<text class="t-desc" x="756" y="572">over QUIC; the DHT holds an</text>
+<text class="t-desc" x="756" y="588">advertisement per org procedure.</text>
 <path class="edge" d="M200 150V190H470V220" marker-end="url(#a)"/>
-<text class="t-rel" x="208" y="172">deploys; sets MCL_BOX</text>
+<text class="t-rel" x="214" y="172">deploys; sets MCL_BOX</text>
 <text class="t-rel" x="208" y="188">and the broker's address</text>
 <path class="edge" d="M710 300H900V166" marker-end="url(#a)"/>
 <text class="t-rel" x="718" y="292">publishes reading_recorded_v1</text>
 <path class="edge" d="M200 470V420H470V372" marker-end="url(#a)"/>
-<text class="t-rel" x="208" y="440">publishes N/+/+/+/# over</text>
+<text class="t-rel" x="214" y="440">publishes N/+/+/+/# over</text>
 <text class="t-rel" x="208" y="456">MQTT, and answers keepalives</text>
 <path class="edge" d="M550 372V470" marker-end="url(#a)"/>
-<text class="t-rel" x="558" y="404">boot claim, MCL_BOX</text>
+<text class="t-rel" x="556" y="452">boot claim, MCL_BOX</text>
 <path class="edge" d="M630 372V430H900V470" marker-end="url(#a)"/>
-<text class="t-rel" x="638" y="422">publishes the one fact</text>
+<text class="t-rel" x="644" y="422">publishes the one fact</text>
 <text class="t-desc" x="40" y="640">The GX speaks first: the service is an MQTT client that subscribes and sends keepalives, and it never writes to the broker.</text>
 <text class="t-desc" x="40" y="658">A reading the mesh does not take is dropped and kept in the store, never replayed, because an old reading would arrive looking current.</text>
 <rect class="b-sys" x="24" y="716" width="22" height="14" rx="3"/>
