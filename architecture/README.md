@@ -3,10 +3,12 @@
 *This exists so a reader can see what mcl-victron talks to, and what it is made
 of, without reading it.*
 
-**Status: one fact, no procedures of its own.** The service subscribes to a Victron GX
-device's dbus-flashmq MQTT broker on the LAN, records every reading in its own
-reckon-db store, and publishes each one live on the mesh. `capabilities/0` is
-empty: nothing is callable, the readings are the output.
+**Status: no procedure of its own; it publishes `reading_recorded_v1`.** The
+service subscribes to a Victron GX device's dbus-flashmq MQTT broker on the LAN,
+records every reading in its own reckon-db store, and publishes each one live on
+the mesh. `mcl_om` adds `mcl-victron/info` and `mcl-victron/get_limits` to every
+service, both open; `capabilities/0` is the list, and this service adds nothing of
+its own to it.
 
 ## Level 1: system context
 
@@ -31,7 +33,7 @@ keepalives, and it never writes to the broker.
 | Component | Technology | Responsibility |
 | --- | --- | --- |
 | `mcl_victron_app` | OTP application | Opens the store from `mcl_victron_service:event_store/0`, then `mcl_om:boot/1`. Ingest starts only after the store exists |
-| `mcl_victron_service` | the `mcl_om_service` behaviour | The six callbacks plus `event_store/0`. `capabilities/0` is empty; `health/0` is `degraded` while the receiver is not connected or the broker has been silent for 1.5 keepalives; `identity_spec/0` asks for scope `mcl-victron` |
+| `mcl_victron_service` | the `mcl_om_service` behaviour | The six callbacks plus `event_store/0`. `capabilities/0` lists no procedure of its own; `health/0` is `degraded` while the receiver is not connected or the broker has been silent for 1.5 keepalives; `identity_spec/0` asks for scope `mcl-victron` |
 | `mcl_victron_sup` | supervisor, `one_for_one` | Two children, the emitter first so it is registered before the first reading is recorded |
 | `receive_victron_mqtt_sup` | supervisor, `one_for_one` | One permanent child, kept separate so the emitter and the receiver restart apart |
 | `receive_victron_mqtt` | `gen_server`, MQTT 3.1.1 over `gen_tcp` | Subscribes to `N/+/+/+/#` and dispatches one command per notification; `mqtt_packet` builds and parses the frames and `victron_topic` splits a topic into portal, service, instance and path. Sends both keepalives and redials a broker silent for 1.5 of them |

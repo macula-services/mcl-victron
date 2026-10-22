@@ -48,7 +48,8 @@ not measurements, so they are not recorded.
 
 ## Mesh surface
 
-One fact, on `<realm>/mcl-victron/victron/energy/reading_recorded_v1`:
+It publishes `reading_recorded_v1`, on
+`<realm>/mcl-victron/victron/energy/reading_recorded_v1`:
 
 | Field | What |
 |---|---|
@@ -62,7 +63,9 @@ One fact, on `<realm>/mcl-victron/victron/energy/reading_recorded_v1`:
 The device and the path are in the payload, not in the topic. A consumer
 subscribes once and filters.
 
-There are no procedures of its own.
+The service has no procedure of its own. `mcl_om` adds `mcl-victron/info` and
+`mcl-victron/get_limits` to every service, both open; `capabilities/0` is the
+list, and this service adds nothing of its own to it.
 
 ## Live, not queued
 

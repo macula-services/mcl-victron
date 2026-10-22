@@ -163,7 +163,7 @@ def context():
     d.edge("M550 372V470")
     d.text("t-rel", 558, 404, "boot claim, MCL_BOX")
     d.edge("M630 372V430H900V470")
-    d.text("t-rel", 638, 422, "publishes the one fact")
+    d.text("t-rel", 638, 422, "publishes reading_recorded_v1")
     d.text("t-desc", 40, 640, "The GX speaks first: the service is an MQTT client that subscribes and sends keepalives, and it never writes to the broker.")
     d.text("t-desc", 40, 658, "A reading the mesh does not take is dropped and kept in the store, never replayed, because an old reading would arrive looking current.")
     d.legend(716, boundary=False)
@@ -180,7 +180,7 @@ def components():
            "reading is dispatched against a store that is not there."], code=True)
     d.box("b-sys", 32, 222, 540, 136, "mcl_victron_service", "[mcl_om_service behaviour]",
           ["The six callbacks mcl_om resolves by name, plus event_store/0. capabilities/0",
-           "is empty: nothing is callable, the readings are the output. health/0 is",
+           "lists no procedure of its own; the readings are the output. health/0 is",
            "degraded while the receiver is not connected, or the broker has been silent",
            "for longer than 1.5 keepalives. identity_spec/0 asks for scope mcl-victron."], code=True)
     d.box("b-cmp", 32, 390, 540, 120, "mcl_victron_sup", "[supervisor, one_for_one]",
@@ -233,11 +233,12 @@ def components():
     d.edge("M740 758V726"); d.text("t-rel", 748, 750, "one command per notification")
     d.edge("M300 830V938H740V894"); d.text("t-rel", 310, 930, "every notification becomes a command")
 
-    d.box("b-mac", 32, 992, 352, 136, "mcl_om", "[library, ~> 1.4]",
+    d.box("b-mac", 32, 992, 352, 152, "mcl_om", "[library, ~> 1.4]",
           ["boot/1: loads the node identity key,",
            "joins the realm, dials the pinned",
            "stations over QUIC and serves /health",
-           "on MCL_HEALTH_PORT. No capabilities."], code=True)
+           "on MCL_HEALTH_PORT. It adds info and",
+           "get_limits, both open."], code=True)
     d.box("b-mac", 404, 992, 352, 136, "macula", "[library, ~> 16.0, wire 1.0]",
           ["QUIC transport, the publish path the",
            "emitter calls, and the signed records",

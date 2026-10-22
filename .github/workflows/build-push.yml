@@ -2,13 +2,12 @@
 #
 # TWO CHANNELS, AND ONLY A RELEASE MOVES :latest.
 #
-#   push of v*   : publishes :<semver>, then :latest once attest signed it <- the dev fleet's deploy channel
+#   push of v*   : publishes :<semver>, then :latest once attest signed it, the digest a host pins
 #   push to main : publishes :main and :<sha>       <- the tip, for trying; nothing follows it
 #
-# The dev fleet (macula-fleet) runs :latest: each box's reconciler pulls it, verifies the
-# digest it resolved to (signature, SBOM, provenance) and runs that digest. So a green v* tag
-# IS the deploy, with no commit to the fleet, and a push to main deploys nothing. The semver
-# tags stay published, so a bad release can be pinned back to a known one.
+# The fleet runs a signed release pinned by digest, and CI commits the pin bump after a v* tag.
+# The tags stay published, so a bad release can be pinned back to a known one. A push to main
+# deploys nothing.
 
 name: build-and-push
 
@@ -26,8 +25,8 @@ on:
       - 'assets/**'
   workflow_dispatch:
 
-# One build per ref: three quick pushes would otherwise finish in any order and
-# leave :latest on whichever finished last.
+# One build per ref: two quick pushes would otherwise race, and the last-finishing
+# one sets the tags, not the last-pushed one.
 concurrency:
   group: build-and-push-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -106,9 +105,9 @@ jobs:
       image: ghcr.io/macula-services/mcl-victron
       digest: ${{ needs.build-and-push.outputs.digest }}
 
-  # :latest is the dev fleet's deploy channel, so it moves LAST: only on a v* tag, and only once
-  # attest has signed and attested this digest. A box that pulls :latest in the window between
-  # push and signature would otherwise refuse the release (and remember that for an hour).
+  # :latest moves LAST, only on a v* tag, and only once attest has signed and attested this
+  # digest. A registry reader that resolves :latest in the window between push and signature
+  # would otherwise get an unsigned digest (and may remember that for an hour).
   promote-latest:
     needs: [build-and-push, attest]
     if: startsWith(github.ref, 'refs/tags/v') && needs.build-and-push.outputs.digest != ''
