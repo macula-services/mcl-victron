@@ -25,7 +25,7 @@ else
     BUILD_MOUNT=(-v mcl-victron-build:/src/_build)
 fi
 
-# host00 is shared: four cores, 8 GB.
+# The gate box is shared: four cores, 8 GB.
 exec podman run --rm --cpus=4 --memory=8g \
     -v "${ROOT}:/src" \
     -v mcl-victron-cargo-registry:/usr/local/cargo/registry \

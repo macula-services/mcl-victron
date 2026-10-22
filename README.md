@@ -21,7 +21,7 @@ It records every reading in its own [reckon-db](https://hex.pm/packages/reckon_d
 store and publishes each one live on the
 [macula](https://github.com/macula-io/macula) mesh.
 
-It runs on macula 13 through [mcl_om](https://hex.pm/packages/mcl_om) 0.35 (pinned below 0.36; not yet wire 1.0), and
+It runs on macula 16 through [mcl_om](https://hex.pm/packages/mcl_om) 1.4 (wire 1.0), and
 every reading it publishes is signed post-quantum.
 
 ## How a reading travels
@@ -62,7 +62,8 @@ One fact, on `<realm>/mcl-victron/victron/energy/reading_recorded_v1`:
 The device and the path are in the payload, not in the topic. A consumer
 subscribes once and filters.
 
-There are no procedures.
+There are no procedures of its own. As on every mcl service, `mcl_om` adds two
+open ones: `mcl-victron/info` and `mcl-victron/get_limits`.
 
 ## Live, not queued
 
