@@ -3,7 +3,7 @@
 *This exists so a reader can see what mcl-victron talks to, and what it is made
 of, without reading it.*
 
-**Status: one fact, no procedures.** The service subscribes to a Victron GX
+**Status: one fact, no procedures of its own.** The service subscribes to a Victron GX
 device's dbus-flashmq MQTT broker on the LAN, records every reading in its own
 reckon-db store, and publishes each one live on the mesh. `capabilities/0` is
 empty: nothing is callable, the readings are the output.
@@ -14,7 +14,7 @@ empty: nothing is callable, the readings are the output.
 
 | Element | Kind | Role |
 | --- | --- | --- |
-| mcl-victron | In scope | An MQTT client on the GX's broker and a publisher on the mesh, in one OTP release in one container. Answers `/health` on 8483 and offers no procedure |
+| mcl-victron | In scope | An MQTT client on the GX's broker and a publisher on the mesh, in one OTP release in one container. Answers `/health` on 8483 and offers no procedure of its own |
 | Service operator | Person | Runs the box, sets `MCL_BOX`, the realm and station variables, and points the service at the GX's LAN address |
 | Consumers of the readings | External system | Subscribe to `reading_recorded_v1` and filter it by portal, service and D-Bus path; the device and the path are in the payload, never in the topic name |
 | Victron GX device | External system | A Cerbo or Venus GX. Its dbus-flashmq broker serves MQTT 3.1.1 on port 1883 with no auth and no TLS, publishing under `N/+/+/+/#` |

@@ -62,7 +62,7 @@ One fact, on `<realm>/mcl-victron/victron/energy/reading_recorded_v1`:
 The device and the path are in the payload, not in the topic. A consumer
 subscribes once and filters.
 
-There are no procedures.
+There are no procedures of its own.
 
 ## Live, not queued
 
