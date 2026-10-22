@@ -21,7 +21,7 @@ It records every reading in its own [reckon-db](https://hex.pm/packages/reckon_d
 store and publishes each one live on the
 [macula](https://github.com/macula-io/macula) mesh.
 
-It runs on macula 13 through [mcl_om](https://hex.pm/packages/mcl_om) 0.35 (pinned below 0.36; not yet wire 1.0), and
+It runs on macula 16 through [mcl_om](https://hex.pm/packages/mcl_om) 1.4 (wire 1.0), and
 every reading it publishes is signed post-quantum.
 
 ## How a reading travels
