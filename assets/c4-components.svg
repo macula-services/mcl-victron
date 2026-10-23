@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 1400" role="img" aria-label="mcl-victron components">
+<title>mcl-victron components</title>
+<style>
+.t-name { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 700; }
+.t-desc { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 12.5px; }
+.t-rel { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 11.5px; paint-order: stroke; stroke-width: 4px; stroke-linejoin: round; }
+.t-code { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 13px; font-weight: 600; }
+.t-type { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; }
+.t-bound { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 12px; font-weight: 600; }
+.t-leg { font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif; font-size: 12px; }
+.edge { fill: none; stroke-width: 1.25; }
+.edge-later { fill: none; stroke-width: 1.25; stroke-dasharray: 5 4; }
+.bg { fill: #FFFFFF; }
+.b-sys { fill: #F5E9CC; stroke: #A56F0A; stroke-width: 2; }
+.b-per { fill: #E3EBF2; stroke: #3B5B7A; stroke-width: 1.25; }
+.b-mac { fill: #E6E4EE; stroke: #5E5A78; stroke-width: 1.25; }
+.b-ext { fill: #ECEFED; stroke: #8A9791; stroke-width: 1.25; }
+.b-cmp { fill: #FFFFFF; stroke: #8A9791; stroke-width: 1.25; }
+.b-later { fill: none; stroke: #8A9791; stroke-width: 1.25; stroke-dasharray: 5 4; }
+.bound { fill: none; stroke: #B3BDB8; stroke-width: 1; }
+.head { fill: #3B5B7A; }
+.t-name, .t-code { fill: #16201D; }
+.t-type, .t-bound, .t-leg { fill: #66736E; }
+.t-desc { fill: #34413C; }
+.t-rel { fill: #66736E; stroke: #FFFFFF; }
+.edge, .edge-later { stroke: #8A9791; }
+.arrowhead { fill: #8A9791; }
+@media (prefers-color-scheme: dark) {
+.bg { fill: #171F1C; }
+.b-sys { fill: #3A2E13; stroke: #E3AA3C; }
+.b-per { fill: #1D2A36; stroke: #8EB4D8; }
+.b-mac { fill: #26243A; stroke: #A9A4C8; }
+.b-ext { fill: #1C2421; stroke: #7D8B85; }
+.b-cmp { fill: #171F1C; stroke: #7D8B85; }
+.b-later { stroke: #7D8B85; }
+.bound { stroke: #4A5752; }
+.head { fill: #8EB4D8; }
+.t-name, .t-code { fill: #E6ECE9; }
+.t-type, .t-bound, .t-leg { fill: #93A09A; }
+.t-desc { fill: #C3CDC8; }
+.t-rel { fill: #93A09A; stroke: #171F1C; }
+.edge, .edge-later { stroke: #7D8B85; }
+.arrowhead { fill: #7D8B85; }
+}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrowhead" d="M0 0L10 5L0 10z"/></marker></defs>
+<rect class="bg" x="0" y="0" width="1160" height="1400"/>
+<rect class="bound" x="16" y="40" width="1128" height="920" rx="12"/>
+<text class="t-bound" x="32" y="62">mcl-victron [Container: one OTP release]</text>
+<rect class="b-cmp" x="32" y="70" width="540" height="120" rx="10"/>
+<text class="t-code" x="48" y="98">mcl_victron_app</text>
+<text class="t-type" x="48" y="116">[OTP application]</text>
+<text class="t-desc" x="48" y="140">Opens this service's own reckon-db store from mcl_victron_service:event_store/0,</text>
+<text class="t-desc" x="48" y="156">then calls mcl_om:boot/1. Ingest starts only after the store exists, so no</text>
+<text class="t-desc" x="48" y="172">reading is dispatched against a store that is not there.</text>
+<rect class="b-sys" x="32" y="222" width="540" height="152" rx="10"/>
+<text class="t-code" x="48" y="250">mcl_victron_service</text>
+<text class="t-type" x="48" y="268">[mcl_om_service behaviour]</text>
+<text class="t-desc" x="48" y="292">The mcl_om_service callbacks, plus event_store/0.</text>
+<text class="t-desc" x="48" y="308">capabilities/0 is empty; mcl_om adds the open info and get_limits.</text>
+<text class="t-desc" x="48" y="324">The readings are the output. health/0 is</text>
+<text class="t-desc" x="48" y="340">degraded while the receiver is not connected, or the</text>
+<text class="t-desc" x="48" y="356">broker has been silent past 1.5 keepalives. identity_spec/0 asks mcl-victron.</text>
+<rect class="b-cmp" x="32" y="402" width="540" height="120" rx="10"/>
+<text class="t-code" x="48" y="430">mcl_victron_sup</text>
+<text class="t-type" x="48" y="448">[supervisor, one_for_one]</text>
+<text class="t-desc" x="48" y="472">Two children, the emitter first so it is registered before the first reading</text>
+<text class="t-desc" x="48" y="488">is recorded: on_victron_reading_recorded_to_mesh, then the receiver's own</text>
+<text class="t-desc" x="48" y="504">supervisor.</text>
+<rect class="b-cmp" x="32" y="542" width="540" height="104" rx="10"/>
+<text class="t-code" x="48" y="570">receive_victron_mqtt_sup</text>
+<text class="t-type" x="48" y="588">[supervisor, one_for_one]</text>
+<text class="t-desc" x="48" y="612">One child, receive_victron_mqtt, restarted permanent.</text>
+<text class="t-desc" x="48" y="628">Kept separate, so the emitter and the receiver restart apart.</text>
+<rect class="b-cmp" x="32" y="678" width="540" height="152" rx="10"/>
+<text class="t-code" x="48" y="706">receive_victron_mqtt</text>
+<text class="t-type" x="48" y="724">[gen_server, MQTT 3.1.1 over gen_tcp]</text>
+<text class="t-desc" x="48" y="748">Subscribes to N/+/+/+/# on the GX's dbus-flashmq broker and dispatches one</text>
+<text class="t-desc" x="48" y="764">record_victron_reading_v1 per notification. mqtt_packet builds and parses the</text>
+<text class="t-desc" x="48" y="780">frames; victron_topic splits a topic into portal, service, instance and path.</text>
+<text class="t-desc" x="48" y="796">Two keepalives: PINGREQ for the session, and R/&lt;portal&gt;/keepalive so the GX</text>
+<text class="t-desc" x="48" y="812">keeps publishing. A broker silent for 1.5 keepalives is left and redialled.</text>
+<rect class="b-cmp" x="588" y="70" width="540" height="168" rx="10"/>
+<text class="t-code" x="604" y="98">on_victron_reading_recorded_to_mesh</text>
+<text class="t-type" x="604" y="116">[evoq_event_handler]</text>
+<text class="t-desc" x="604" y="140">This service's own code publishes to the mesh here and nowhere else. Each</text>
+<text class="t-desc" x="604" y="156">recorded reading becomes one reading_recorded_v1 fact, built by</text>
+<text class="t-desc" x="604" y="172">mcl_victron_facts, published from a monitored worker with at most 64</text>
+<text class="t-desc" x="604" y="188">in flight. A reading the mesh does not take is dropped and counted,</text>
+<text class="t-desc" x="604" y="204">never queued, and the count is logged once a minute. A restart's</text>
+<text class="t-desc" x="604" y="220">replay of the store's history is skipped: it is not live.</text>
+<rect class="b-cmp" x="588" y="266" width="540" height="136" rx="10"/>
+<text class="t-code" x="604" y="294">mcl_victron_store</text>
+<text class="t-type" x="604" y="312">[reckon-db store, single node]</text>
+<text class="t-desc" x="604" y="336">Opens the store mcl_victron_service:event_store/0 describes, waits until</text>
+<text class="t-desc" x="604" y="352">reckon_db lists it, and starts the per-store evoq subscription the emitter</text>
+<text class="t-desc" x="604" y="368">receives readings on. Id mcl_victron_store is also named in sys.config.src</text>
+<text class="t-desc" x="604" y="384">and a test compares the two. Single node, no indexes, no integrity key.</text>
+<rect class="b-cmp" x="588" y="422" width="540" height="136" rx="10"/>
+<text class="t-code" x="604" y="450">victron_device_aggregate</text>
+<text class="t-type" x="604" y="468">[evoq aggregate]</text>
+<text class="t-desc" x="604" y="492">victron_device_state applies each event. The aggregate accepts a reading and</text>
+<text class="t-desc" x="604" y="508">appends victron_reading_recorded_v1 to the device's stream in mcl_victron_store.</text>
+<text class="t-desc" x="604" y="524">Snapshots keep an aggregate's start from replaying the whole stream, but</text>
+<text class="t-desc" x="604" y="540">nothing limits the store's size yet (issue #1).</text>
+<rect class="b-cmp" x="588" y="590" width="540" height="136" rx="10"/>
+<text class="t-code" x="604" y="618">maybe_record_victron_reading</text>
+<text class="t-type" x="604" y="636">[command handler, plain Erlang module]</text>
+<text class="t-desc" x="604" y="660">Handles the command and dispatches it to the device's stream. The stream id</text>
+<text class="t-desc" x="604" y="676">is victron- followed by the first 128 bits of sha256(portal_id), in hex, so</text>
+<text class="t-desc" x="604" y="692">one GX device is one stream whatever its LAN address, and a device that has</text>
+<text class="t-desc" x="604" y="708">never appeared before opens a new one.</text>
+<rect class="b-cmp" x="588" y="758" width="540" height="136" rx="10"/>
+<text class="t-code" x="604" y="786">record_victron_reading_v1</text>
+<text class="t-type" x="604" y="804">[evoq command]</text>
+<text class="t-desc" x="604" y="828">One command per MQTT notification: portal, service, instance, D-Bus path, the</text>
+<text class="t-desc" x="604" y="844">value and observed_at. A zero-byte payload, a non-JSON payload and</text>
+<text class="t-desc" x="604" y="860">{"value": null} are absences, not measurements, so no command is built.</text>
+<path class="edge" d="M200 190V222" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="214">boots with</text>
+<path class="edge" d="M200 358V402" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="390">start/1 starts</text>
+<path class="edge" d="M200 510V542" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="534">starts the receiver's supervisor</text>
+<path class="edge" d="M200 646V678" marker-end="url(#a)"/>
+<text class="t-rel" x="208" y="670">supervises</text>
+<path class="edge" d="M740 266V222" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="254">the per-store subscription hands it over</text>
+<path class="edge" d="M740 422V402" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="416">appends victron_reading_recorded_v1</text>
+<path class="edge" d="M740 590V558" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="582">dispatched to the device's stream</text>
+<path class="edge" d="M740 758V726" marker-end="url(#a)"/>
+<text class="t-rel" x="748" y="750">one command per notification</text>
+<path class="edge" d="M300 830V938H740V894" marker-end="url(#a)"/>
+<text class="t-rel" x="310" y="930">every notification becomes a command</text>
+<rect class="b-mac" x="32" y="992" width="352" height="136" rx="10"/>
+<text class="t-code" x="48" y="1020">mcl_om</text>
+<text class="t-type" x="48" y="1038">[library, ~&gt; 1.4]</text>
+<text class="t-desc" x="48" y="1062">boot/1: loads the node identity key,</text>
+<text class="t-desc" x="48" y="1078">joins the realm, dials the pinned</text>
+<text class="t-desc" x="48" y="1094">stations over QUIC and serves /health</text>
+<text class="t-desc" x="48" y="1110">on MCL_HEALTH_PORT and registers its capabilities.</text>
+<rect class="b-mac" x="404" y="992" width="352" height="136" rx="10"/>
+<text class="t-code" x="420" y="1020">macula</text>
+<text class="t-type" x="420" y="1038">[library, ~&gt; 16.0, wire 1.0]</text>
+<text class="t-desc" x="420" y="1062">QUIC transport, the publish path the</text>
+<text class="t-desc" x="420" y="1078">emitter calls, and the signed records</text>
+<text class="t-desc" x="420" y="1094">the mesh DHT holds.</text>
+<rect class="b-cmp" x="776" y="992" width="352" height="136" rx="10"/>
+<text class="t-code" x="792" y="1020">evoq / reckon_evoq / reckon_db</text>
+<text class="t-type" x="792" y="1038">[libraries, &gt;= 1.26.1 / &gt;= 2.7.2 / ~&gt; 5.4]</text>
+<text class="t-desc" x="792" y="1062">Event sourcing for the one aggregate,</text>
+<text class="t-desc" x="792" y="1078">over this service's own store: commands</text>
+<text class="t-desc" x="792" y="1094">in, events out, and the subscription the</text>
+<text class="t-desc" x="792" y="1110">emitter reads.</text>
+<rect class="b-ext" x="40" y="1160" width="1080" height="120" rx="10"/>
+<text class="t-code" x="56" y="1188">The host environment</text>
+<text class="t-type" x="56" y="1206">[read by the service; both volumes are in the compose file]</text>
+<text class="t-desc" x="56" y="1230">VICTRON_MQTT_HOST, VICTRON_MQTT_PORT and VICTRON_MQTT_KEEPALIVE_SEC, MCL_DATA_DIR, MCL_HEALTH_PORT, MCL_BOX,</text>
+<text class="t-desc" x="56" y="1246">and the realm and station variables. The identity key is /etc/mcl/secrets/identity.key, a named volume; the</text>
+<text class="t-desc" x="56" y="1262">store and the recordings are on a second volume at MCL_DATA_DIR.</text>
+<path class="edge" d="M1128 316H1140V970H950V992" marker-end="url(#a)"/>
+<text class="t-rel" x="1152" y="700" text-anchor="middle" transform="rotate(-90 1152 700)">events in and out</text>
+<text class="t-desc" x="40" y="1320">config/sys.config.src fixes the org, mcl-victron, which the fact's topic carries, and the realm name; the service refuses</text>
+<text class="t-desc" x="40" y="1338">to start unless sha256 of that name is MCL_REALM. It must share a LAN with the GX: dbus-flashmq serves MQTT on the local network only.</text>
+<rect class="b-sys" x="24" y="1378" width="22" height="14" rx="3"/>
+<text class="t-leg" x="54" y="1390">In scope</text>
+<rect class="b-per" x="110.8" y="1378" width="22" height="14" rx="3"/>
+<text class="t-leg" x="140.8" y="1390">Person</text>
+<rect class="b-mac" x="184.39999999999998" y="1378" width="22" height="14" rx="3"/>
+<text class="t-leg" x="214.39999999999998" y="1390">Macula infrastructure</text>
+<rect class="b-ext" x="357.0" y="1378" width="22" height="14" rx="3"/>
+<text class="t-leg" x="387.0" y="1390">External system</text>
+<rect class="b-cmp" x="490.0" y="1378" width="22" height="14" rx="3"/>
+<text class="t-leg" x="520.0" y="1390">Container or component</text>
+<rect class="bound" x="669.2" y="1378" width="22" height="14" rx="3"/>
+<text class="t-leg" x="699.2" y="1390">Boundary</text>
+</svg>

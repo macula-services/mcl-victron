@@ -1,8 +1,7 @@
 %%% @doc Emitter: each `victron_reading_recorded_v1' becomes one
 %%% `reading_recorded_v1' fact on the mesh (mcl_victron_facts).
 %%%
-%%% The only place this service touches the mesh. Ingest (MQTT, command, store)
-%%% never waits for it.
+%%% The mesh write happens here: ingest (MQTT, command, store) never waits for it.
 %%%
 %%% evoq hands a handler the event ENVELOPE; the reading is its `data'.
 %%%
@@ -11,7 +10,7 @@
 %%% a publish that fails or a pool that dies mid-call is a counted drop rather
 %%% than a crash of the emitter. Not mcl_om_pubsub: its publisher is linked to
 %%% the caller, blocks the caller on an announcement before it publishes, and
-%%% sends two announcement frames per reading. At most ?MAX_IN_FLIGHT publishes
+%%% sends a pair of announcement frames per reading. At most ?MAX_IN_FLIGHT publishes
 %%% run at once; a reading beyond that is dropped and counted.
 %%%
 %%% LIVE, NOT QUEUED. A reading the mesh does not take is dropped and kept in
