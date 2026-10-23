@@ -119,6 +119,15 @@ persistent volume. The service must share a LAN with the GX.
 `/health` reports `degraded` when the service is not connected to the GX's
 broker, or when the broker has been silent for more than 1.5 keepalives.
 
+## Architecture
+
+The C4 model is in [architecture/README.md](architecture/README.md), with its
+diagrams drawn by `architecture/c4_diagrams.py` into `assets/`. Change the
+script, run it (`python3 architecture/c4_diagrams.py`), and look at the result
+before committing.
+
+![mcl-victron system context](assets/c4-context.svg)
+
 ## License
 
 Apache-2.0
