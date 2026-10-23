@@ -153,8 +153,8 @@ def context():
            "over QUIC; the DHT holds an", "advertisement per org procedure."])
 
     d.edge("M200 150V190H470V220")
-    d.text("t-rel", 214, 172, "deploys; sets MCL_BOX")
-    d.text("t-rel", 208, 188, "and the broker's address")
+    d.text("t-rel", 208, 166, "deploys; sets MCL_BOX")
+    d.text("t-rel", 208, 182, "and the broker's address")
     d.edge("M710 300H900V166")
     d.text("t-rel", 718, 292, "publishes reading_recorded_v1")
     d.edge("M200 470V420H470V372")
@@ -253,7 +253,7 @@ def components():
           ["VICTRON_MQTT_HOST, VICTRON_MQTT_PORT and VICTRON_MQTT_KEEPALIVE_SEC, MCL_DATA_DIR, MCL_HEALTH_PORT, MCL_BOX,",
            "and the realm and station variables. The identity key is /etc/mcl/secrets/identity.key, a named volume; the",
            "store and the recordings are on a second volume at MCL_DATA_DIR."], code=True)
-    d.edge("M1128 316H1140V970H950V992"); d.text("t-rel", 1120, 400, "events in and out", anchor="end")
+    d.edge("M1128 316H1140V970H950V992"); d.text("t-rel", 1152, 700, "events in and out", anchor="middle", rotate=-90)
     d.text("t-desc", 40, 1320, "config/sys.config.src fixes the org, mcl-victron, which the fact's topic carries, and the realm name; the service refuses")
     d.text("t-desc", 40, 1338, "to start unless sha256 of that name is MCL_REALM. It must share a LAN with the GX: dbus-flashmq serves MQTT on the local network only.")
     d.legend(1378)

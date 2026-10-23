@@ -161,7 +161,7 @@
 <text class="t-desc" x="56" y="1246">and the realm and station variables. The identity key is /etc/mcl/secrets/identity.key, a named volume; the</text>
 <text class="t-desc" x="56" y="1262">store and the recordings are on a second volume at MCL_DATA_DIR.</text>
 <path class="edge" d="M1128 316H1140V970H950V992" marker-end="url(#a)"/>
-<text class="t-rel" x="1120" y="400" text-anchor="end">events in and out</text>
+<text class="t-rel" x="1152" y="700" text-anchor="middle" transform="rotate(-90 1152 700)">events in and out</text>
 <text class="t-desc" x="40" y="1320">config/sys.config.src fixes the org, mcl-victron, which the fact's topic carries, and the realm name; the service refuses</text>
 <text class="t-desc" x="40" y="1338">to start unless sha256 of that name is MCL_REALM. It must share a LAN with the GX: dbus-flashmq serves MQTT on the local network only.</text>
 <rect class="b-sys" x="24" y="1378" width="22" height="14" rx="3"/>

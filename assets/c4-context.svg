@@ -88,8 +88,8 @@
 <text class="t-desc" x="756" y="572">over QUIC; the DHT holds an</text>
 <text class="t-desc" x="756" y="588">advertisement per org procedure.</text>
 <path class="edge" d="M200 150V190H470V220" marker-end="url(#a)"/>
-<text class="t-rel" x="214" y="172">deploys; sets MCL_BOX</text>
-<text class="t-rel" x="208" y="188">and the broker's address</text>
+<text class="t-rel" x="208" y="166">deploys; sets MCL_BOX</text>
+<text class="t-rel" x="208" y="182">and the broker's address</text>
 <path class="edge" d="M710 300H900V166" marker-end="url(#a)"/>
 <text class="t-rel" x="718" y="292">publishes reading_recorded_v1</text>
 <path class="edge" d="M200 470V420H470V372" marker-end="url(#a)"/>
