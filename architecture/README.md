@@ -20,7 +20,7 @@ those are the procedures carrying its name; the readings are its output.
 | Consumers of the readings | External system | Subscribe to `reading_recorded_v1` and filter it by portal, service and D-Bus path; the device and the path are in the payload, never in the topic name |
 | Victron GX device | External system | A Cerbo or Venus GX. Its dbus-flashmq broker serves MQTT 3.1.1 on port 1883 with no auth and no TLS, publishing under `N/+/+/+/#` |
 | macula-realm | Macula infrastructure | Endorses the node's identity key and admits the boot claim, which must carry `MCL_BOX` |
-| Macula stations, mesh DHT | Macula infrastructure | The pinned seeds in `MACULA_STATION_SEEDS` carry the fact over QUIC; the DHT holds the node's advertisement |
+| Macula stations, mesh DHT | Macula infrastructure | The pinned seeds in `MACULA_STATION_SEEDS` carry the fact over QUIC |
 
 The GX speaks first: this service is an MQTT client that subscribes and sends
 keepalives, and it never writes to the broker.
